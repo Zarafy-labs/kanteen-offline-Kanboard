@@ -1,0 +1,40 @@
+# Dependencies
+Kanteen/node_modules/
+
+# Environment variables — copy Kanteen/.env.local.example → Kanteen/.env.local
+.env
+.env.local
+.env.*.local
+Kanteen/.env.local
+
+# Docker dev config — copy docker/config.php.example → docker/config.php
+docker/config.php
+
+# AI / editor tooling (personal, not project code)
+.claude/
+.agents/
+skills-lock.json
+CLAUDE.md
+
+# Internal planning docs
+plan.md
+plans/
+
+# SSL certificates
+certs/
+
+# Vite dev cache
+Kanteen/node_modules/.vite/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Stray local files
+/icon-*.jpg

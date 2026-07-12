@@ -1,0 +1,26 @@
+# Production LAN install: Kanboard + the Kanteen PWA, served over HTTPS.
+# See INSTALL.md. Runs on the LAN only — no internet exposure by design.
+#
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# certs/kanboard.crt and certs/kanboard.key MUST exist before `up`, otherwise
+# Docker creates directories at those paths and nginx fails to start. If you
+# skip the cert mounts entirely the image self-signs one — but a self-signed
+# cert is untrusted, which disables the service worker (no offline). See step 1.
+services:
+  kanboard:
+    image: kanboard/kanboard:v1.2.46   # pinned for reproducible installs — bump deliberately
+    container_name: kanboard
+    restart: unless-stopped
+    ports:
+      - "443:443"                     # HTTPS only: the PWA service worker requires a secure origin.
+                                      # Port 80 is intentionally NOT published — an http visit would
+                                      # silently disable offline. One secure origin, always.
+    volumes:
+      - kanboard_data:/var/www/app/data
+      - ./Kanteen:/var/www/app/plugins/Kanteen:ro          # built plugin (Asset/app + PHP), read-only
+      - ./certs/kanboard.crt:/etc/nginx/ssl/kanboard.crt:ro        # trusted LAN cert (mkcert) — see INSTALL.md
+      - ./certs/kanboard.key:/etc/nginx/ssl/kanboard.key:ro
+
+volumes:
+  kanboard_data:

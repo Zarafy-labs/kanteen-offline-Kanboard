@@ -1,0 +1,13 @@
+services:
+  kanboard:
+    image: kanboard/kanboard:latest
+    container_name: kanboard-dev
+    ports:
+      - "8080:80"
+    volumes:
+      - kanboard_data:/var/www/app/data
+      - ./Kanteen:/var/www/app/plugins/Kanteen:ro
+      - ./docker/config.php:/var/www/app/config.php:ro
+
+volumes:
+  kanboard_data:

@@ -1,0 +1,37 @@
+/*
+ * Fira Code — Latin subset, woff2 only.
+ * Files are committed to src/fonts/ and bundled by Vite so the font is
+ * available offline without any network request (Workbox precaches all woff2).
+ */
+
+@font-face {
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fira-code-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./fira-code-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fira-code-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./fira-code-latin-700-normal.woff2') format('woff2');
+}

@@ -1,0 +1,48 @@
+name: Release
+
+# Cut a GitHub Release whose asset (kanteen.zip) is the installable plugin,
+# built from the committed Asset/app bundle so consumers need no Node.
+#
+# Two ways to trigger:
+#   • Manually (recommended with the squashed deploy-github.sh flow):
+#       Actions tab → Release → "Run workflow" → enter v0.1.0
+#       or:  gh workflow run release.yml -f version=v0.1.0 -R Zarafy-labs/kanteen-offline-Kanboard
+#     Creates the tag on the pushed snapshot — no local history is uploaded.
+#   • By tag (only if you push real history to github):
+#       git tag v0.1.0 && git push github v0.1.0
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag, e.g. v0.1.0'
+        required: true
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write   # required for `gh release create`
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Package plugin
+        # Zip the Kanteen/ folder minus dev-only files. Extracting the result
+        # into plugins/ yields plugins/Kanteen/ ready to enable.
+        run: >
+          zip -r kanteen.zip Kanteen
+          -x 'Kanteen/node_modules/*' 'Kanteen/src/*' 'Kanteen/.env*'
+          'Kanteen/scripts/*' 'Kanteen/public/*' 'Kanteen/index.html'
+          'Kanteen/vite.config.js' 'Kanteen/package-lock.json'
+
+      - name: Resolve version
+        id: v
+        run: echo "tag=${{ github.event.inputs.version || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ steps.v.outputs.tag }}" kanteen.zip --generate-notes --title "${{ steps.v.outputs.tag }}"

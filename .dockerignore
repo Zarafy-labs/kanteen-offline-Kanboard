@@ -1,0 +1,12 @@
+# Keep the baked image lean — ship only the plugin runtime (PHP + built Asset/),
+# not the ~160M build toolchain. node_modules alone dwarfs the whole plugin.
+Kanteen/node_modules
+Kanteen/src
+Kanteen/scripts
+Kanteen/public
+Kanteen/vite.config.js
+Kanteen/package.json
+Kanteen/package-lock.json
+Kanteen/.env.local
+Kanteen/.env.local.example
+Kanteen/.claude
