@@ -1,0 +1,10 @@
+<?php
+
+// Copy this file to docker/config.php (gitignored) before running the dev environment.
+// docker/config.php is mounted into the Kanboard container as config.php.
+
+// Fixed Application API token — the seed script authenticates with this.
+// Any string works for local dev; keep it out of version control.
+define('API_AUTHENTICATION_TOKEN', 'devtoken-local-only');
+
+define('DEBUG', true);

@@ -1,0 +1,40 @@
+# Verifies that the committed Vite build (Kanteen/Asset/app) actually
+# matches Kanteen/src. The plugin ships the prebuilt bundle so it installs
+# without Node on the Kanboard server — this guards against a PR whose source
+# and committed bundle have drifted apart. Reproducible because package-lock.json
+# pins vite/rollup/esbuild, so `npm ci` produces identical output hashes on any
+# runner. (GitHub Actions and Gitea Actions both read .github/workflows.)
+name: build-check
+
+on:
+  push:
+    paths:
+      - 'Kanteen/src/**'
+      - 'Kanteen/package.json'
+      - 'Kanteen/package-lock.json'
+      - 'Kanteen/vite.config.js'
+      - 'Kanteen/Asset/**'
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Kanteen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Kanteen/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - name: Verify committed Asset/app matches source
+        run: |
+          if ! git diff --quiet -- Asset/app; then
+            echo "::error::Asset/app is out of date — run 'npm run build' in Kanteen/ and commit the result."
+            git diff --stat -- Asset/app
+            exit 1
+          fi
